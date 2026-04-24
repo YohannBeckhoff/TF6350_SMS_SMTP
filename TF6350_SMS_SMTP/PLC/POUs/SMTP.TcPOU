@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="SMTP" Id="{4392a0dd-a4e3-480f-b1a3-3113a7d55d2c}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM SMTP
+VAR
+	fbSendMail: FB_SmtpV3;
+	sMessage: STRING := 'Hello Beckhoff';
+	R_Edge: R_TRIG;
+	bStart: BOOL;
+	bBusy: BOOL;
+	bError: BOOL;
+	nErrID: UDINT;
+	bSend: BOOL;
+	nErr: UDINT;
+	nMailCounter: UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+fbSendMail(
+	sNetId:= '', 
+	sSmtpServer:= sSmtpServer, 
+	sUsername:= sUsername, 
+	sPassword:= sPassword, 
+	nEncryption:= 1, 
+	sFrom:= sFrom, 
+	sTo:= sTo, 
+	sCc:= , 
+	sBcc:= , 
+	sSubject:= 'Email from your Beckhoff PLC', 
+	pMessage:= ADR(sMessage), 
+	cbMessage:= SIZEOF(sMessage), 
+	bExecute:= bStart, 
+	tTimeout:= DEFAULT_ADS_TIMEOUT, 
+	bBusy=> bBusy, 
+	bError=> bError, 
+	nErrId=> nErrId);	
+	
+IF NOT bBusy  AND bStart THEN
+bStart := FALSE;
+END_IF ]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

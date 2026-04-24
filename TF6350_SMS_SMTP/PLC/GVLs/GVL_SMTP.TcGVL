@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <GVL Name="GVL_SMTP" Id="{fe49ac7b-e456-4815-ad13-b5ca0479c354}">
+    <Declaration><![CDATA[VAR_GLOBAL
+	//A completer par vos identifiants
+	sSmtpServer:STRING:='smtp.gmail.com';
+	sUsername:STRING:='xxxx@gmail.com';
+	sPassword:STRING:='abcd efgh ijkl mnop'; //Vrai code envoyé par mail
+	sFrom:STRING:='xxxx@gmail.com';
+	sTo:STRING:='xxxx@beckhoff.com';
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

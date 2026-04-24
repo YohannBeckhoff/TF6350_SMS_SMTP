@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="SMTPFull" Id="{cd8679a4-465d-464b-b477-7ee92327a0f1}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM SMTPFull
+VAR
+	fbSmtpFull    : FB_SmtpV3_Full;
+	sMessage_HTML : STRING(5000) := '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head><title>Alerte PLC</title></head><body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;"><table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:30px 0;"><tr><td align="center"><table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);"><tr><td style="background-color:#006DB7;padding:24px 32px;"><h1 style="margin:0;color:#ffffff;font-size:20px;">&#9881; Beckhoff PLC Notification</h1></td></tr><tr><td style="padding:32px;"><h2 style="color:#333333;font-size:18px;margin-top:0;">Bonjour,</h2><p style="color:#555555;font-size:15px;line-height:1.6;">Cet e-mail a ete envoye automatiquement depuis votre automate Beckhoff.</p><table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f7ff;border-left:4px solid #006DB7;border-radius:4px;margin:24px 0;"><tr><td style="padding:16px;"><p style="margin:0;color:#333;font-size:14px;"><b>Machine :</b> PLC-01</p><p style="margin:8px 0 0;color:#333;font-size:14px;"><b>Statut :</b> <span style="color:#28a745;">&#10003; Operationnel</span></p><p style="margin:8px 0 0;color:#333;font-size:14px;"><b>Heure :</b> 14:32:05</p></td></tr></table><p style="color:#555555;font-size:15px;line-height:1.6;">Veuillez ne pas repondre a cet e-mail, il est envoye automatiquement.</p></td></tr><tr><td style="background-color:#f4f4f4;padding:16px 32px;border-top:1px solid #eeeeee;"><p style="margin:0;color:#999999;font-size:12px;text-align:center;">Beckhoff Automation &mdash; Envoi automatique depuis TwinCAT 3</p></td></tr></table></td></tr></table></body></html>';
+	nPriority     : UDINT; 
+	R_Edge     : R_TRIG;
+	bStart     : BOOL;
+	bError     : BOOL;
+	udErrId     : UDINT;
+	nMailCounter : UDINT := 0;
+	sFiles     : ARRAY [0..32] OF STRING(80) := ['C:\Temp\Temperatures.txt','C:\Temp\Log.txt']; (* TODO: Il faut que les fichiers existent sinon erreur 32795*)	
+	bBusy: BOOL;
+	nErrId: UDINT;
+	nState: INT;
+
+
+END_VAR 
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+fbSmtpFull(
+	sNetId:= '', 
+	sSmtpServer:= sSmtpServer, 
+	sUsername:= sUsername, 
+	sPassword:= sPassword, 
+	nEncryption:= 1, 
+	sFrom:= sFrom, 
+	sTo:= sTo, 
+	sCc:= , 
+	sBcc:= , 
+	sDispositionNotification:= , 
+	sReturnReceipt:= , 
+	nPriority:= 1, 
+	nSensitivity:= , 
+	nPort:= , 
+	nContentType:= 2, 
+	sSubject:= 'Email from your Beckhoff PLC SMPTFull', 
+	pMessage:= ADR(sMessage_HTML), 
+	cbMessage:= SIZEOF(sMessage_HTML), 
+	sAttachments:= sFiles, 
+	bExecute:= bStart, 
+	tTimeout:=DEFAULT_ADS_TIMEOUT , 
+	bBusy=> bBusy, 
+	bError=> bError, 
+	nErrId=>nErrId );
+	
+IF NOT bBusy  AND bStart THEN
+	nState := 0;
+	bStart := FALSE;
+END_IF 
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
